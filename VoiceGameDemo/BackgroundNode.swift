@@ -12,6 +12,11 @@ class BackgroundNode: SKNode {
 
     
     private var nodeList = [SKShapeNode]()
+    private var widthList = [CGFloat]()
+    private var gapList = [CGFloat]()
+    
+    private var distance:CGFloat = 0.0
+    
     
     private var timmer : Timer?
    
@@ -21,10 +26,12 @@ class BackgroundNode: SKNode {
         timmer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(checkNodeList), userInfo: nil, repeats: true)
         addWidth(gap: 40, width: 100)
         addWidth(gap: 100, width: 150)
-        addWidth(gap: 80, width: 50)
-        addWidth(gap: 70, width: 80)
-        addWidth(gap: 90, width: 90)
+        addWidth(gap: 80, width: 150)
+        addWidth(gap: 70, width: 180)
+        addWidth(gap: 90, width: 190)
         addWidth(gap: 70, width: 190)
+        addWidth(gap: 100, width: 150)
+        addWidth(gap: 150, width: 90)
     }
     
     public func addWidth(gap : CGFloat, width: CGFloat){
@@ -41,20 +48,28 @@ class BackgroundNode: SKNode {
         newNode.fillColor = SKColor(red:0.38, green:0.60, blue:0.65, alpha:1.0)
         newNode.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x:startX ,y:ypos + height), to: CGPoint(x:startX+width,y:ypos + height))
         
+        gapList.append(gap)
+        widthList.append(width)
         nodeList.append(newNode)
         addChild(newNode)
     }
     
+    
+    
     func checkNodeList(){
         
+//        print(self.position)
         if let firstNode = nodeList.first{
-            if (firstNode.frame.origin.x + firstNode.frame.width) < -700{
+            if ( (-self.position.x) - distance > ( widthList.first! + gapList.first!)) {
                 print("remove")
                 //准备remove
                 nodeList.removeFirst()
                 firstNode.removeFromParent()
+                
+                distance += widthList.removeFirst()
+                distance += gapList.removeFirst()
                 //random一个新的
-                addWidth(gap: CGFloat(random(min: 50, max: 100)), width: CGFloat(random(min: 50, max: 150)))
+                addWidth(gap: CGFloat(random(min: 50, max: 100)), width: CGFloat(random(min: 150, max: 350)))
                 
             }
             

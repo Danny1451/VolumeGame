@@ -47,7 +47,7 @@ class GameScene: SKScene {
             recoder.isMeteringEnabled = true
             recoder.record()
             lastPeak = -10.0
-            timmer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(voiceMoniter), userInfo: nil, repeats: true)
+            timmer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(voiceMoniter), userInfo: nil, repeats: true)
         }
        
         
@@ -65,7 +65,7 @@ class GameScene: SKScene {
         }
         
         // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
+        
         let plane = SKTexture(image: #imageLiteral(resourceName: "robot2"))
         self.spinnyNode = SKSpriteNode(texture: plane)
         
@@ -73,19 +73,22 @@ class GameScene: SKScene {
            
             
             spinnyNode.physicsBody = SKPhysicsBody(texture: plane, size: spinnyNode.size)
+            spinnyNode.physicsBody?.allowsRotation = false
+            
+            addChild(spinnyNode)
             
 //            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(M_PI), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-         
-                                              SKAction.removeFromParent()]))
+//            
+//            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(M_PI), duration: 1)))
+//            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
+//                                              SKAction.fadeOut(withDuration: 0.5),
+//         
+//                                              SKAction.removeFromParent()]))
             
         }
         
         
-        
+       
     }
     
     func voiceMoniter(){
@@ -98,18 +101,23 @@ class GameScene: SKScene {
         lastPeak = peak
         
 //        print("average = \(value) , peak = \(peak)")
+         print("speed \(abs(speed))")
+        if abs(speed) > 15{
+            
+            let impulse = -((abs(speed) - 15) * 20 + 300.0)
+            
+           
+            self.spinnyNode?.physicsBody?.applyImpulse(CGVector(dx:0.0,dy:Double(impulse)))
+//            self.backgroundNode.run(SKAction.moveBy(x:-30, y: 0, duration: 0.5))
+        }
         
-        if abs(speed) > 2 {
-            DispatchQueue.global().async {
-                DispatchQueue.main.async {
-
-                    if (speed > 0){
-                        self.backgroundNode.run(SKAction.moveBy(x: -20, y: 0, duration: 0.5))
-                    }
-
-                    self.voiceLab?.text = "fenbei\(speed)"
-                }
-            } 
+        print("value \(abs(value!))")
+        if abs(value!) > 50 {
+           
+                    
+            self.backgroundNode.run(SKAction.moveBy(x:-20, y: 0, duration: 0.5))
+            
+            self.voiceLab?.text = "fenbei\(speed)"
         }
         
         
@@ -125,6 +133,9 @@ class GameScene: SKScene {
 //
 //            self.addChild(n)
 //        }
+
+        
+//        self.spinnyNode?.run(SKAction.moveBy(x: 0, y: 100, duration: 0.5))
         
     }
     
