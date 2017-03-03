@@ -28,7 +28,7 @@ class GameScene: SKScene {
         let recordSettings = [AVSampleRateKey : NSNumber(value: Float(44100.0)),//声音采样率
             AVFormatIDKey : NSNumber(value: Int32(kAudioFormatMPEG4AAC)),//编码格式
             AVNumberOfChannelsKey : NSNumber(value: 1),//采集音轨
-            AVEncoderAudioQualityKey : NSNumber(value: Int32(AVAudioQuality.medium.rawValue))]//音频质量
+            AVEncoderAudioQualityKey : NSNumber(value: Int32(AVAudioQuality.high.rawValue))]//音频质量
         
         let url = URL(fileURLWithPath:"/dev/null")
         
@@ -46,7 +46,7 @@ class GameScene: SKScene {
             recoder.prepareToRecord()
             recoder.isMeteringEnabled = true
             recoder.record()
-            lastPeak = -10.0
+            lastPeak = 20.0
             timmer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(voiceMoniter), userInfo: nil, repeats: true)
         }
        
@@ -92,34 +92,74 @@ class GameScene: SKScene {
     }
     
     func voiceMoniter(){
+        
         recoder?.updateMeters()
         
-        let value = recoder?.averagePower(forChannel: 0)
+        let avager = recoder?.averagePower(forChannel: 0)
         let peak = recoder?.peakPower(forChannel: 0)
         
-        let speed = peak! - lastPeak!
-        lastPeak = peak
+        var level:Float = 0.0
+        let minDecibels:Float = -80.0
         
-//        print("average = \(value) , peak = \(peak)")
-         print("speed \(abs(speed))")
-        if abs(speed) > 15{
+        if avager! < minDecibels {
+            level = 0.0
+        }else if avager! >= 0.0{
+            level = 1.0
+        }else{
+            let root:Float = 2.0
+            let minAmp:Float = powf(10.0, 0.05 * minDecibels)
+            let inverseAmpRange:Float = 1.0 / (1.0 - minAmp)
+            let amp:Float = powf(10.0, 0.05 * avager!)
+            let adjAmp = (amp - minAmp) * inverseAmpRange
             
-            let impulse = -((abs(speed) - 15) * 20 + 300.0)
+            level = powf(adjAmp, 1.0 / root)
             
-           
-            self.spinnyNode?.physicsBody?.applyImpulse(CGVector(dx:0.0,dy:Double(impulse)))
-//            self.backgroundNode.run(SKAction.moveBy(x:-30, y: 0, duration: 0.5))
+            
         }
         
-        print("value \(abs(value!))")
-        if abs(value!) > 50 {
-           
-                    
+        let result = level * 120
+        print(" avager = \( level * 120) , peak = \(peak!)" )
+        
+        voiceLab?.text = String(level * 120)
+        if result > 40 {
             self.backgroundNode.run(SKAction.moveBy(x:-20, y: 0, duration: 0.5))
-            
-            self.voiceLab?.text = "fenbei\(speed)"
         }
         
+        
+        
+        let speed = result - lastPeak!
+        
+        if speed > 20 {
+             let impulse = -( sqrt((abs(speed) - 20)) * 50 + 100.0)
+            self.spinnyNode?.physicsBody?.applyImpulse(CGVector(dx:0.0,dy:Double(impulse)))
+            
+        }
+        
+        //peak Value
+        
+//        let speed = peak! - lastPeak!
+//        lastPeak = peak
+//        
+////        print("average = \(value) , peak = \(peak)")
+//         print("speed \(abs(speed))")
+//        if abs(speed) > 15{
+//            
+//            let impulse = -((abs(speed) - 15) * 20 + 300.0)
+//            
+//           
+//            self.spinnyNode?.physicsBody?.applyImpulse(CGVector(dx:0.0,dy:Double(impulse)))
+////            self.backgroundNode.run(SKAction.moveBy(x:-30, y: 0, duration: 0.5))
+//        }
+//        
+//        print("value \(abs(value!))")
+//        if abs(value!) > 50 {
+//           
+//                    
+//            self.backgroundNode.run(SKAction.moveBy(x:-20, y: 0, duration: 0.5))
+//            
+//            self.voiceLab?.text = "fenbei\(speed)"
+//        }
+//        
         
     }
         

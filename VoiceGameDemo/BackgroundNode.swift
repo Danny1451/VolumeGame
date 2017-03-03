@@ -24,14 +24,12 @@ class BackgroundNode: SKNode {
         
         
         timmer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(checkNodeList), userInfo: nil, repeats: true)
-        addWidth(gap: 40, width: 100)
-        addWidth(gap: 100, width: 150)
-        addWidth(gap: 80, width: 150)
-        addWidth(gap: 70, width: 180)
-        addWidth(gap: 90, width: 190)
-        addWidth(gap: 70, width: 190)
-        addWidth(gap: 100, width: 150)
-        addWidth(gap: 150, width: 90)
+        addWidth(gap: 40, width: 200)
+        addWidth(gap: 100, width: 250)
+        addWidth(gap: 80, width: 250)
+        addWidth(gap: 70, width: 280)
+        addWidth(gap: 90, width: 290)
+        
     }
     
     public func addWidth(gap : CGFloat, width: CGFloat){
@@ -69,7 +67,7 @@ class BackgroundNode: SKNode {
                 distance += widthList.removeFirst()
                 distance += gapList.removeFirst()
                 //random一个新的
-                addWidth(gap: CGFloat(random(min: 50, max: 100)), width: CGFloat(random(min: 150, max: 350)))
+                addWidth(gap: CGFloat(random(min: 50, max: 100)), width: CGFloat(random(min: 250, max: 350)))
                 
             }
             
