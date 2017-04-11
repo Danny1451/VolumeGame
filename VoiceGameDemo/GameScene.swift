@@ -77,14 +77,6 @@ class GameScene: SKScene {
             
             addChild(spinnyNode)
             
-//            spinnyNode.lineWidth = 2.5
-//            
-//            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(M_PI), duration: 1)))
-//            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-//                                              SKAction.fadeOut(withDuration: 0.5),
-//         
-//                                              SKAction.removeFromParent()]))
-            
         }
         
         
@@ -121,7 +113,7 @@ class GameScene: SKScene {
         print(" avager = \( level * 120) , peak = \(peak!)" )
         
         voiceLab?.text = String(level * 120)
-        if result > 40 {
+        if result > 30 {
             self.backgroundNode.run(SKAction.moveBy(x:-20, y: 0, duration: 0.5))
         }
         
@@ -129,37 +121,13 @@ class GameScene: SKScene {
         
         let speed = result - lastPeak!
         
-        if speed > 20 {
+        
+        if speed > 30 {
              let impulse = -( sqrt((abs(speed) - 20)) * 50 + 100.0)
             self.spinnyNode?.physicsBody?.applyImpulse(CGVector(dx:0.0,dy:Double(impulse)))
             
         }
-        
-        //peak Value
-        
-//        let speed = peak! - lastPeak!
-//        lastPeak = peak
-//        
-////        print("average = \(value) , peak = \(peak)")
-//         print("speed \(abs(speed))")
-//        if abs(speed) > 15{
-//            
-//            let impulse = -((abs(speed) - 15) * 20 + 300.0)
-//            
-//           
-//            self.spinnyNode?.physicsBody?.applyImpulse(CGVector(dx:0.0,dy:Double(impulse)))
-////            self.backgroundNode.run(SKAction.moveBy(x:-30, y: 0, duration: 0.5))
-//        }
-//        
-//        print("value \(abs(value!))")
-//        if abs(value!) > 50 {
-//           
-//                    
-//            self.backgroundNode.run(SKAction.moveBy(x:-20, y: 0, duration: 0.5))
-//            
-//            self.voiceLab?.text = "fenbei\(speed)"
-//        }
-//        
+
         
     }
         
@@ -167,15 +135,6 @@ class GameScene: SKScene {
     func touchDown(atPoint pos : CGPoint) {
         
         self.backgroundNode.run(SKAction.moveBy(x: -20, y: 0, duration: 0.5))
-
-//        if let n = self.spinnyNode?.copy() as! SKSpriteNode? {
-//            n.position = pos
-//
-//            self.addChild(n)
-//        }
-
-        
-//        self.spinnyNode?.run(SKAction.moveBy(x: 0, y: 100, duration: 0.5))
         
     }
     
